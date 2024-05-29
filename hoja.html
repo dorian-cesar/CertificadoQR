@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Certificado</title>
+    <style>
+        .container {
+            width: 800px;
+        }
+
+        .logo {
+            text-align: center;
+        }
+
+        .folio p {
+            margin-top: 3px;
+            text-align: left;
+        }
+
+        .contenido {
+            width: 100%;
+            margin-top: 25px;
+            text-align: justify;
+        }
+
+        .QR {
+            display: flex;
+            margin-top: 30px;
+            justify-content: center;
+        }
+
+        .firmas {
+            width: 80%;
+            display: flex;
+            margin: auto;
+            margin-top: 20px;
+            margin-bottom: 40px;
+            justify-content: space-between;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="folio mt-3">
+            <p>Folio:<b> 010203</b></p>
+        </div>
+        <div class="logo mt-5">
+            <img src="./asset/Captura.JPG" alt="">
+            <h1>CERTIFICADO</h1>
+        </div>
+        <div class="contenido">
+            <p style="text-align: center;">Servicios de Implementación y tecnologías de la información y comunicación
+            </p>
+            <p>Con fecha <b id="date">01/01/2023</b>, la empresa proveedora de productos y servicios <b>WIT SPA</b>
+                <b>RUT 77.122.368-K</b> certifica que el vehículo patente <b id="patente">“RFKK-86”</b> perteneciente a
+                la
+                empresa <b>TRANSPORTES TANDEM</b> RUT <b>99.593.350-K</b>, consta de un equipamiento
+                con la siguiente identificación:
+            </p>
+            <h4>Tabla de Productos/Servicios</h4>
+            <table class="table table-bordered mt-5">
+                <thead>
+                    <tr>
+                        <th scope="col">Nombre producto/servicio</th>
+                        <th scope="col">Modelo</th>
+                        <th scope="col">No Cert-QA</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sentinel WIT</td>
+                        <td>31G1812561067</td>
+                        <td id="verify">Insertar número de certificación aquí</td>
+                    </tr>
+                    <!-- Puedes agregar más filas según sea necesario -->
+                </tbody>
+            </table>
+            <div class="texto">
+                <p>
+                    Homologado y certificado bajo las normas de uso para equipos electrónicos y de
+                    telecomunicaciones FCC.
+                </p>
+                <p>
+                    Los dispositivos se encuentran instalados en los vehículos de la empresa, conectados
+                    a un servicio de comunicaciones, plataformas de monitoreo, control, mesa de ayuda,
+                    estadística y administración.
+                </p>
+                <p>
+                    El presente certificado se extiende para los fines de presentación que requiera la
+                    empresa, con fecha de expiración el <b id="fechaVencimiento">31/12/2024</b>.
+                </p>
+            </div>
+            <div class="QR">
+                <div id="qrCode"></div>
+            </div>
+            <div class="firmas">
+                <img src="./asset/euro.JPG" alt="">
+                <img src="./asset/isra.JPG" alt="">
+            </div>
+
+            <div class="footer">
+                <p><b>WIT</b> – Innovación Tecnológica, Obispo Umaña 633, RM, Santiago de Chile.</p>
+            </div>
+
+        </div>
+    </div>
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            var verify = generarClaveAleatoria(10);
+            console.log(verify);
+            // Función para generar el código QR
+            function generarQR(verify) {
+                var qr = new QRCode(document.getElementById("qrCode"), {
+                    text: verify,
+                    width: 200,
+                    height: 200
+                });
+            }
+
+
+
+            // Llamada a la función para generar el código QR
+            generarQR(verify); // Puedes cambiar "https://ejemplo.com" por la URL que desees codificar en el QR
+
+            // Obtener la fecha actual
+            var today = new Date();
+            var dd = String(today.getDate()).padStart(2, '0');
+            var mm = String(today.getMonth() + 1).padStart(2, '0'); // Enero es 0!
+            var yyyy = today.getFullYear();
+
+
+            today = dd + '/' + mm + '/' + yyyy;
+
+
+            // Actualizar el contenido del elemento con id "date"
+            $('#date').text(today);
+            // Obtener la información del localStorage
+            // Añadir un año a la fecha actual
+            var nextYear = new Date(yyyy + 1, mm - 1, dd); // Restar 1 al mes ya que en JavaScript los meses van de 0 a 11
+            var ddNextYear = String(nextYear.getDate()).padStart(2, '0');
+            var mmNextYear = String(nextYear.getMonth() + 1).padStart(2, '0');
+            var yyyyNextYear = nextYear.getFullYear();
+
+            var fechaVencimiento = ddNextYear + '/' + mmNextYear + '/' + yyyyNextYear;
+
+            $('#fechaVencimiento').text(fechaVencimiento);
+
+
+            var patente = localStorage.getItem("patente");
+
+
+            // Verificar si la información existe en el localStorage
+            if (patente) {
+                // Mostrar la información en el elemento con id "patente"
+                $('#patente').text(patente);
+                $('#verify').text(verify);
+
+            }
+            function generarClaveAleatoria(longitud) {
+                var caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+                var clave = '';
+
+                for (var i = 0; i < longitud; i++) {
+                    var indice = Math.floor(Math.random() * caracteres.length);
+                    clave += caracteres.charAt(indice);
+                }
+
+                return clave;
+            }
+        }
+        );
+    </script>
+</body>
+
+</html>
